@@ -41,9 +41,9 @@ spec:
         - name: HADOOP_CLIENT_OPTS
           value: -Xmx1g
         - name: SPARK_EXECUTOR_MEMORY
-          value: 4g
+          value: 1g
         - name: SPARK_DRIVER_MEMORY
-          value: 6g
+          value: 1g
         - name: ETL_FORCED
           GEN3_ETL_FORCED|-value: "TRUE"-|
         - name: slackWebHook
@@ -68,7 +68,7 @@ spec:
         resources:
           limits:
             cpu: 1
-            memory: 10Gi
+            memory: 2Gi
         command: ["/bin/bash" ]
         args:
           - "-c"
