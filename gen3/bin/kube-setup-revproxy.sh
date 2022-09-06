@@ -251,9 +251,11 @@ export ARN=$(g3kubectl get configmap global --output=jsonpath='{.data.revproxy_a
 #  revproxy deployment using http proxy protocol.
 #
 # port 81 == proxy-protocol listener - main service entry
-export TARGET_PORT_HTTPS=81
+#export TARGET_PORT_HTTPS=81
+export TARGET_PORT_HTTPS=443
 # port 82 == proxy-protocol listener - redirects to https
-export TARGET_PORT_HTTP=82
+#export TARGET_PORT_HTTP=82
+export TARGET_PORT_HTTP=80
 
 if [[ "$ARN" == "GCP" ]]; then
   # port 443 - https listener - main service entry
@@ -267,6 +269,7 @@ elif [[ "$ARN" == "ONPREM" ]]; then
   export TARGET_PORT_HTTP=83
 elif [[ ! "$ARN" =~ ^arn ]]; then
   gen3_log_warn "global configmap not configured with TLS certificate ARN"
+  gen3_log_warn "TARGET_PORT_HTTPS is $TARGET_PORT_HTTPS and TARGET_PORT_HTTP is $TARGET_PORT_HTTP"
 fi
 
 if [[ -z "$DRY_RUN" ]]; then
