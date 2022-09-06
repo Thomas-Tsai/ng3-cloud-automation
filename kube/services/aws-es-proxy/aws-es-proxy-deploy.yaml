@@ -61,7 +61,7 @@ spec:
               # 0.8
               BINARY=/go/src/github.com/abutaha/aws-es-proxy/aws-es-proxy
             fi
-            ${BINARY} -endpoint "https://$ES_ENDPOINT" -verbose -listen ":9200"
+            ${BINARY} -endpoint "http://$ES_ENDPOINT" -verbose -listen ":9200" -debug -no-sign-reqs
         resources:
           requests:
             cpu: 250m
