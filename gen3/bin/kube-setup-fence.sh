@@ -9,6 +9,8 @@ source "${GEN3_HOME}/gen3/lib/utils.sh"
 gen3_load "gen3/lib/kube-setup-init"
 
 setup_audit_sqs() {
+  # support non aws environment, just ignore create sqs
+  exit 0 
   local sqsName="$(gen3 api safe-name audit-sqs)"
   sqsInfo="$(gen3 sqs create-queue-if-not-exist $sqsName)" || exit 1
   sqsUrl="$(jq -e -r '.["url"]' <<< "$sqsInfo")" || { echo "Cannot get 'sqs-url' from output: $sqsInfo"; exit 1; }
