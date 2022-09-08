@@ -8,9 +8,12 @@
 source "${GEN3_HOME}/gen3/lib/utils.sh"
 gen3_load "gen3/lib/kube-setup-init"
 
+export ARN=$(g3kubectl get configmap global --output=jsonpath='{.data.revproxy_arn}')
+
 setup_audit_sqs() {
-  # support non aws environment, just ignore create sqs
-  exit 0 
+  if [[ "$ARN" == "PRIVATE" ]]; then
+      return
+  fi
   local sqsName="$(gen3 api safe-name audit-sqs)"
   sqsInfo="$(gen3 sqs create-queue-if-not-exist $sqsName)" || exit 1
   sqsUrl="$(jq -e -r '.["url"]' <<< "$sqsInfo")" || { echo "Cannot get 'sqs-url' from output: $sqsInfo"; exit 1; }
@@ -50,7 +53,7 @@ g3kubectl create sa "fence-sa" > /dev/null 2>&1 || true
 if ! [[ -n "$JENKINS_HOME" || ! -f "$(gen3_secrets_folder)/creds.json" ]]; then
   if ! setup_audit_sqs; then
     gen3_log_err "kube-setup-fence bailing out - failed to setup audit SQS"
-    exit 1
+        exit 1
   fi
 fi
 

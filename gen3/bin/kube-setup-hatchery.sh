@@ -63,6 +63,10 @@ policy=$( cat <<EOM
 }
 EOM
 )
+
+
+export ARN=$(g3kubectl get configmap global --output=jsonpath='{.data.revproxy_arn}')
+
 saName=$(echo "hatchery-service-account" | head -c63)
 echo $saName
 if ! g3kubectl get sa "$saName" -o json | jq -e '.metadata.annotations | ."eks.amazonaws.com/role-arn"' > /dev/null 2>&1; then
@@ -78,6 +82,9 @@ if ! g3kubectl get sa "$saName" -o json | jq -e '.metadata.annotations | ."eks.a
     fi
 
     gen3_log_info "Attaching policy '${policyName}' to role '${roleName}'"
+    if [[ "$ARN" == "PRIVATE" ]]; then
+        return
+    fi
     gen3 awsrole attach-policy ${policyArn} --role-name ${roleName} --force-aws-cli || exit 1
     gen3 awsrole attach-policy "arn:aws:iam::aws:policy/AWSResourceAccessManagerFullAccess" --role-name ${roleName} --force-aws-cli || exit 1
 fi
