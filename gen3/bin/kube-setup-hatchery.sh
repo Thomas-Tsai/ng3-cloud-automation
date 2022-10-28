@@ -83,10 +83,11 @@ if ! g3kubectl get sa "$saName" -o json | jq -e '.metadata.annotations | ."eks.a
 
     gen3_log_info "Attaching policy '${policyName}' to role '${roleName}'"
     if [[ "$ARN" == "PRIVATE" ]]; then
-        return
+        echo "no need to set aws policy on PRIVATE mode"
+    else
+        gen3 awsrole attach-policy ${policyArn} --role-name ${roleName} --force-aws-cli || exit 1
+        gen3 awsrole attach-policy "arn:aws:iam::aws:policy/AWSResourceAccessManagerFullAccess" --role-name ${roleName} --force-aws-cli || exit 1
     fi
-    gen3 awsrole attach-policy ${policyArn} --role-name ${roleName} --force-aws-cli || exit 1
-    gen3 awsrole attach-policy "arn:aws:iam::aws:policy/AWSResourceAccessManagerFullAccess" --role-name ${roleName} --force-aws-cli || exit 1
 fi
 
 
