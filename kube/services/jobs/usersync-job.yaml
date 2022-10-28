@@ -238,7 +238,7 @@ spec:
             source "${GEN3_HOME}/gen3/lib/utils.sh"
             gen3_load "gen3/gen3setup"
 
-            if [ "${userYamlS3Path}" = 'none' ]; then
+            if [ "${userYamlS3Path}" == 'none' ]; then
               echo "s3 yaml not provided - bailing out"
               exit 1
             fi
